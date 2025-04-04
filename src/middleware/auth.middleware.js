@@ -11,7 +11,7 @@ const authMiddleware = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
+        req.user = decoded; // 'user' is a variable that attached to the request object for storing the decoded jwt. We can use any name instead of 'user'.
         next();
 
     } catch (err) {
