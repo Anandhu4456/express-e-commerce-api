@@ -10,6 +10,10 @@ const UserRepository = require("../repository/user.repository");
 const UserUsecase = require("../usecase/user.usecase");
 const UserController = require("../controller/user.controller");
 
+const OrderRepository = require("../repository/order.repository");
+const OrderUsecase = require("../usecase/order.usecase");
+const OrderController = require("../controller/order.controller");
+
 // Instantiate dependencies
 const userRepo = new UserRepository();
 const userUsecase = new UserUsecase(userRepo);
@@ -23,6 +27,10 @@ const productRepo = new ProductRepository();
 const productUsecase = new ProductUsecase(productRepo, categoryRepo);
 const productController = new ProductController(productUsecase);
 
+const orderRepo = new OrderRepository();
+const orderUsecase = new OrderUsecase(orderRepo);
+const orderController = new OrderController(orderUsecase);
+
 // Export controller for using in routes
 // Exporting as an object
-module.exports = { categoryController, productController, userController };
+module.exports = { categoryController, productController, userController, orderController };
