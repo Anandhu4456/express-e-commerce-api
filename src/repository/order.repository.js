@@ -17,7 +17,7 @@ class OrderRepository {
             path: "orderItems",
             populate: {
                 path: "product",
-                model: "product"
+                model: "Product"
             }
         });
     }
@@ -27,7 +27,7 @@ class OrderRepository {
             path: "orderItems",
             populate: {
                 path: "product",
-                model: "product"
+                model: "Product"
             }
         });
     }

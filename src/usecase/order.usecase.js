@@ -1,27 +1,41 @@
-
+const Product = require("../models/product.model")
 class OrderUsecase{
-    constructor(orderRepository) {
+    constructor(orderRepository,productRepo) {
         this.orderRepository = orderRepository;
+        this.productRepo = productRepo;
     }
 
     async createOrder(orderInput) {
-
-        // Takes id's of ordered items
+        // First save all order items
         const orderItemsIds = await Promise.all(
             orderInput.orderItems.map(item => this.orderRepository.createOrderItem(item))
         );
-
-        // Calculate total price
-        const totalPrice = orderInput.orderItems.reduce((acc, item) => acc + (item.quantity * item.product.price), 0);
-
-        // orderData object has the details of orderInput( details of the order), product id's, total price
+    
+        // We need to fetch product details to get prices
+        const products = await this.productRepo.GetAllProducts({
+            _id: { $in: orderInput.orderItems.map(item => item.product) }
+        });
+    
+        // Create a map for quick price lookup
+        const productPriceMap = {};
+        products.forEach(product => {
+            productPriceMap[product._id] = product.price;
+        });
+    
+        // Calculate total price using actual product prices
+        const totalPrice = orderInput.orderItems.reduce((acc, item) => {
+            const price = productPriceMap[item.product] || 0;
+            const quantity = item.quantity || 0;
+            return acc + (price * quantity);
+        }, 0);
+    
+        // Create order data
         const orderData = {
             ...orderInput,
-            orderItems : orderItemsIds.map(i => i._id),
+            orderItems: orderItemsIds.map(i => i._id),
             totalPrice
-        }
-
-        // Passing the orderData object to createOrder
+        };
+    
         return await this.orderRepository.createOrder(orderData);
     }
 

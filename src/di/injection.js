@@ -28,7 +28,7 @@ const productUsecase = new ProductUsecase(productRepo, categoryRepo);
 const productController = new ProductController(productUsecase);
 
 const orderRepo = new OrderRepository();
-const orderUsecase = new OrderUsecase(orderRepo);
+const orderUsecase = new OrderUsecase(orderRepo, productRepo);
 const orderController = new OrderController(orderUsecase);
 
 // Export controller for using in routes
